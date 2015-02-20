@@ -1,0 +1,186 @@
+int store[2][15];
+
+long previous;
+long current;
+long time;
+char bluetooth;
+int index=0;
+int flag_index=0;
+
+
+
+
+
+
+
+void setup()
+{
+ Serial.begin(9600);
+ pinMode(13,OUTPUT);
+ pinMode(12,OUTPUT);
+ pinMode(11,OUTPUT);
+ pinMode(10,OUTPUT); 
+}
+
+
+void loop()
+{
+  
+  if(Serial.available())
+  {
+   bluetooth=Serial.read();
+   
+
+   
+   if(flag_index!=0&&bluetooth!=' ')
+  { 
+   current=millis();
+   store[0][index]=current-previous;
+   index++;
+  }
+
+  else
+  flag_index=1;
+ 
+   
+   if(bluetooth=='f')
+   {
+    store[1][index]=1;
+    previous=millis();
+    forward(); 
+   }
+  else if(bluetooth=='b')
+  {
+   store[1][index]=2;
+   previous=millis(); 
+   backward(); 
+  }
+  else if(bluetooth=='l')
+  {
+   store[1][index]=3;
+   previous=millis();
+   left(); 
+  }
+  else if(bluetooth=='r')
+  {
+   store[1][index]=4;
+   previous=millis();
+   right(); 
+  } 
+  else if(bluetooth=='s')
+  {
+   store[1][index]=5;
+   previous=millis();
+   robot_stop(); 
+  }
+  else if(bluetooth==' ')
+  {
+   rep(); 
+  }   
+    
+    
+  }
+  
+}
+
+
+void forward()
+{
+ digitalWrite(13,HIGH);
+ digitalWrite(12,LOW); 
+ digitalWrite(11,HIGH);
+ digitalWrite(10,LOW); 
+}
+
+
+void backward()
+{
+ digitalWrite(13,LOW);
+ digitalWrite(12,HIGH); 
+ digitalWrite(11,LOW);
+ digitalWrite(10,HIGH); 
+}
+
+void right()
+{
+ digitalWrite(13,HIGH);
+ digitalWrite(12,LOW); 
+ digitalWrite(11,LOW);
+ digitalWrite(10,HIGH); 
+}
+
+
+void left()
+{
+ digitalWrite(13,LOW);
+ digitalWrite(12,HIGH); 
+ digitalWrite(11,HIGH);
+ digitalWrite(10,LOW); 
+}
+
+void robot_stop()
+{
+ digitalWrite(13,LOW);
+ digitalWrite(12,LOW); 
+ digitalWrite(11,LOW);
+ digitalWrite(10,LOW); 
+}
+
+
+void rep()
+{
+ int i,j;
+ for(i=0;i<15;i++)
+{
+
+  if(store[1][i]==1)
+  {
+   forward();
+   delay(store[0][i]); 
+  }
+   if(store[1][i]==2)
+  {
+   backward();
+   delay(store[0][i]); 
+  }
+    if(store[1][i]==5)
+  {
+   robot_stop();
+   delay(store[0][i]); 
+  }
+    if(store[1][i]==3)
+  {
+   left();
+   delay(store[0][i]); 
+  }
+    if(store[1][i]==4)
+  {
+   right();
+   delay(store[0][i]); 
+  }
+ 
+
+
+}
+  
+}
+
+
+
+void empty()
+{
+ int i,j;
+ for(i=0;i<15;i++)
+{
+ for(j=0;j<2;j++)
+{
+ store[j][i]=0; 
+ 
+} 
+  
+  
+}
+
+index=0;
+}
+
